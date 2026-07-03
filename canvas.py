@@ -1,4 +1,4 @@
-class Canvas: #essa classe gere os canavs do tkinter
+class Canvas_draw: #essa classe gere os canavs do tkinter
     def __init__(self, canvas):
         self.canvas = canvas #recebe o real canvas
     
