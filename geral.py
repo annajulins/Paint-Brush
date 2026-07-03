@@ -16,7 +16,8 @@ class Geral:
         self.label = Label(frame, text='Linha, Livre, Retangulo, Oval ou Circulo')
         self.label.grid(column=0, row=0, sticky=W, **paddings)
 
-        self.tipo.get() = StringVar(window)
+        tipo = self.tipo.get()
+        tipo = StringVar(window)
         self.option_menu = OptionMenu(frame, self.tipo.get(), 
                                     'Linha', 'Livre', 'Oval', 'Retangulo', 'Circulo')
         self.option_menu.grid(column=1, row=0, sticky=W, **paddings)
