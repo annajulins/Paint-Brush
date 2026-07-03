@@ -25,7 +25,7 @@ def interface (self):
         self.canvas = Canvas(frame, bg='white', width=900, height=900)
         self.canvas.grid(column=0, row=1, columnspan=2, sticky=W, **paddings)
 
-        self.frame.pack()
+        frame.pack()
 
         self.canvas.bind('<ButtonPress-1>', self.figura_nova.iniciar())
         self.canvas.bind('<B1-Motion>', self.figura_nova.mover())
