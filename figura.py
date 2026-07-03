@@ -7,7 +7,7 @@ class Figura:
     @abstractmethod
     def desenhar (self, canvas):
         pass #serve para desenhar as figuras, e, como cada uma tem sua forma de desenho, serão especificadas nas subclasses
-
+    @abstractmethod
     def incompleta(self): #verificação se a figura desenhada está ou não finalizada
         return False
     
