@@ -11,8 +11,8 @@ class Geral:
         self.cor = StringVar(value = self.cores[0]) #cor da borda
         self.bg = StringVar(value = self.cores[0]) #cor do preenchimento
 
-# ----- parte gráfica -----
-    def grafica (self, label, option_menu, canvas):
+# ----- interface gráfica -----
+    def interface (self, label, option_menu, canvas):
         self.label = Label(frame, text='Linha, Livre, Retangulo, Oval ou Circulo')
         self.label.grid(column=0, row=0, sticky=W, **paddings)
 
