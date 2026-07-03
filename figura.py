@@ -1,11 +1,11 @@
 class Figura:
-    def ___init__(self, cor, bg): #definição de cor (preenchimento ou desenho) e de background
+    def __init__(self, cor, bg): #definição de cor (preenchimento ou desenho) e de background
         self.cor = cor
         self.bg = bg
 
     def desenhar (self, canvas):
-        pass #serve para "redesenhar" as figuras antes feitas
+        pass #serve para desenhar as figuras, e, como cada uma tem sua forma de desenho, serão especificadas nas subclasses
 
-    def incompleta(self): #verificação se a figura desenhadas está ou não finalizada
+    def incompleta(self): #verificação se a figura desenhada está ou não finalizada
         return False
     
