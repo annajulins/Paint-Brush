@@ -1,3 +1,4 @@
+from tkinter import *
 class Figura:
     def __init__(self, cor, bg): #definição de cor (preenchimento ou desenho) e de background
         self.cor = cor
