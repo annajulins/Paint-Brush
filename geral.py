@@ -11,8 +11,8 @@ class Geral:
         self.cor = StringVar(value = self.cores[0]) #cor da borda
         self.bg = StringVar(value = self.cores[0]) #cor do preenchimento
 
-# ----- interface gráfica -----
-    def interface (self, label, option_menu, canvas):
+# ----- Interface grafica -----
+def interface (self):
         self.label = Label(frame, text='Linha, Livre, Retangulo, Oval ou Circulo')
         self.label.grid(column=0, row=0, sticky=W, **paddings)
 
@@ -26,6 +26,32 @@ class Geral:
         self.canvas.grid(column=0, row=1, columnspan=2, sticky=W, **paddings)
 
         self.frame.pack()
+
+        self.canvas.bind('<ButtonPress-1>', self.figura_nova.iniciar())
+        self.canvas.bind('<B1-Motion>', self.figura_nova.mover())
+        self.canvas.bind('<ButtonRelease-1>', self.figura_nova.incluir())
+
+        self.cor_escolhida = StringVar()
+        self.cor_escolhida.set(self.cores[0])  # cor inicial
+
+        self.back_escolhida = StringVar()
+        self.back_escolhida.set(self.cores[0])
+
+        self.menu_cor = OptionMenu(window, self.cor_escolhida, *self.cores)
+        self.menu_back = OptionMenu(window, self.back_escolhida, *self.cores)
+
+        self.menu_cor.pack()
+        self.menu_back.pack()
+
+
+        self.cor_escolhida.trace_add("write", self.mudar_cor)
+        self.back_escolhida.trace_add("write", self.mudar_back)
+
+    def mudar_cor(self, *args):
+        self.atualizar()
+
+    def mudar_back(self, *args):
+        self.atualizar()
 
 # ----- eventos -----
     def iniciar(self, event): #chamada quando o usuario pressiona o mouse
