@@ -83,7 +83,7 @@ def interface (self):
         if not self.figura_nova.incompleta():
             self.figuras.append(self.figura_nova)
 
-        atualizar()
+        self.atualizar()
 
     def atualizar(self):
         t = Canvas_draw()
