@@ -1,9 +1,10 @@
 from tkinter import *
+from abc import ABC, abstractmethod
 class Figura:
     def __init__(self, cor, bg): #definição de cor (preenchimento ou desenho) e de background
         self.cor = cor
         self.bg = bg
-
+    @abstractmethod
     def desenhar (self, canvas):
         pass #serve para desenhar as figuras, e, como cada uma tem sua forma de desenho, serão especificadas nas subclasses
 
