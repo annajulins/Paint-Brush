@@ -1,6 +1,8 @@
 from tkinter import *
 from abc import ABC, abstractmethod
-class Figura:
+
+# ==== CLASSE PAI(ABSTRATA) ====
+class Figura(ABC):
     def __init__(self, cor, bg): #definição de cor (preenchimento ou desenho) e de background
         self.cor = cor
         self.bg = bg
