@@ -9,3 +9,4 @@ class Oval(Figura):
 
     def incompleta(self):
         return (self.x1, self.y1) == (self.x2, self.y2) #se os dois cantos forem iguais, o oval nao tem tamanho
+        # return self.x1 == self.x2 or self.y1 == self.y2
