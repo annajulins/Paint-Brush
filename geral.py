@@ -1,75 +1,85 @@
+# ==== APLICANDO ====
 class Geral:
-    def _init_(self, root):
+    def __init__(self, root):
         self.root = root
 
-        self.figuras = [] #guarda todas as figuras desenhadas
-        self.figura_nova = None #figura que esta sendo criada naquele momento
+        self.figuras = []
+        self.figura_nova = None
 
-        self.cores = ["black", "red", "orange", "yellow", "green", "blue", "purple", "white"] #cores a serem escolhidas
+        self.cores = ["black", "red", "orange", "yellow", "green", "blue", "purple", "white"]
 
-        self.tipo = StringVar() #variaveis do tkinter
-        self.cor = StringVar(value = self.cores[0]) #cor da borda
-        self.bg = StringVar(value = self.cores[0]) #cor do preenchimento
+        self.tipo = StringVar(value='Linha')
+        self.cor = StringVar(value = self.cores[0])
+        self.bg = StringVar(value = self.cores[0])
 
-# ----- Interface grafica -----
-def interface (self):
-        self.label = Label(frame, text='Linha, Livre, Retangulo, Oval ou Circulo')
-        self.label.grid(column=0, row=0, sticky=W, **paddings)
+        self.interface()
 
-        tipo = self.tipo.get()
-        tipo = StringVar(window)
-        self.option_menu = OptionMenu(frame, self.tipo.get(), 
-                                    'Linha', 'Livre', 'Oval', 'Retangulo', 'Circulo')
-        self.option_menu.grid(column=1, row=0, sticky=W, **paddings)
+    # ----- Interface gráfica -----
+    def interface (self):
+        self.frame = Frame(self.root)
+        self.frame.pack()
 
-        self.canvas = Canvas(frame, bg='white', width=900, height=900)
-        self.canvas.grid(column=0, row=1, columnspan=2, sticky=W, **paddings)
+        Label(self.frame,
+               text='Linha, Livre, Retangulo, Oval ou Circulo:'
+               ).grid(column=0, row=0, padx=5, pady=5)
 
-        frame.pack()
+        OptionMenu(self.frame, self.tipo, 
+                    'Linha', 'Livre', 'Oval', 'Retangulo', 'Circulo'
+                    ).grid(column=1, row=0)
 
-        self.canvas.bind('<ButtonPress-1>', self.figura_nova.iniciar())
-        self.canvas.bind('<B1-Motion>', self.figura_nova.mover())
-        self.canvas.bind('<ButtonRelease-1>', self.figura_nova.incluir())
+        self.canvas = Canvas(self.frame, 
+                             bg='white', 
+                             width=700, 
+                             height=500)
+        
+        self.canvas.grid(column=0, row=1, columnspan=2)
 
-        self.cor_escolhida = StringVar()
-        self.cor_escolhida.set(self.cores[0])  # cor inicial
+        OptionMenu(
+            self.root,
+            self.cor,
+            *self.cores
+        ).pack()
 
-        self.back_escolhida = StringVar()
-        self.back_escolhida.set(self.cores[0])
+        OptionMenu(
+            self.root,
+            self.bg,
+            *self.cores
+        ).pack()
 
-        self.menu_cor = OptionMenu(window, self.cor_escolhida, *self.cores)
-        self.menu_back = OptionMenu(window, self.back_escolhida, *self.cores)
+        self.canvas.bind('<ButtonPress-1>', self.iniciar)
+        self.canvas.bind('<B1-Motion>', self.mover)
+        self.canvas.bind('<ButtonRelease-1>', self.incluir)
 
-        self.menu_cor.pack()
-        self.menu_back.pack()
+        self.cor.trace_add("write", self.mudar_cor)
+        self.bg.trace_add("write", self.mudar_bg)
 
-
-        self.cor_escolhida.trace_add("write", self.mudar_cor)
-        self.back_escolhida.trace_add("write", self.mudar_back)
-
+    # ----- cor -----
     def mudar_cor(self, *args):
         self.atualizar()
 
-    def mudar_back(self, *args):
+    def mudar_bg(self, *args):
         self.atualizar()
 
-# ----- eventos -----
-    def iniciar(self, event): #chamada quando o usuario pressiona o mouse
-        tipo = self.tipo.get() #obtem o tipo escolhido de imagem pelo usuario
+    # ----- eventos -----
+    def iniciar(self, event):
+        tipo = self.tipo.get()
 
         if tipo == 'Linha':
-            self.figura_nova = Linha(event.x, event.y, event.x, event.y, self.cor.get()) #inicialmente começo e fim são iguais, por isso o ponto fica "duplicado"
+            self.figura_nova = Linha(event.x, event.y, event.x, event.y, self.cor.get())
         elif tipo == 'Circulo':
-            self.figura_nova = Circulo(event.x, event.y, 0, self.cor.get(), self.bg.get()) #raio comeca de tamanho nulo
+            self.figura_nova = Circulo(event.x, event.y, 0, self.cor.get(), self.bg.get())
         elif tipo == 'Oval':
-            self.figura_nova = Oval(event.x, event.y, event.x, event.y, self.cor.get(), self.bg.get()) #os cantos sao os mesmos 
+            self.figura_nova = Oval(event.x, event.y, event.x, event.y, self.cor.get(), self.bg.get())
         elif tipo == 'Retangulo':
-            self.figura_nova = Retangulo(event.x, event.y, event.x, event.y, self.cor.get(), self.bg.get()) #os cantos sao os mesmos
+            self.figura_nova = Retangulo(event.x, event.y, event.x, event.y, self.cor.get(), self.bg.get())
         else: #sobrou só livre
             self.figura_nova = Livre(self.cor.get())
-            self.figura_nova.adicionar_ponto(event.x, event.y) #o primeiro ponto é adicionado a lista
+            self.figura_nova.adicionar_ponto(event.x, event.y)
 
     def mover(self, event):
+        if self.figura_nova is None:
+            return
+    
         tipo = self.tipo.get()
 
         if tipo == 'Livre':
@@ -79,13 +89,28 @@ def interface (self):
         else:
             self.figura_nova.x2, self.figura_nova.y2 = event.x, event.y
 
-    def incluir(self, event): #quando o desenho, termina, verifica se a figura é valida, e, se sim, esta sera adicionada a lista de definitiva
+        self.atualizar()
+
+
+    def incluir(self, event):
+        if self.figura_nova is None:
+            return 
+        
         if not self.figura_nova.incompleta():
             self.figuras.append(self.figura_nova)
+
+        self.figura_nova = None
 
         self.atualizar()
 
     def atualizar(self):
-        t = Canvas_draw()
-        t.desenhar(self.figuras[])
+        self.canvas.delete("all")
 
+        for figura in self.figuras:
+            figura.desenhar(self.canvas)
+
+        if self.figura_nova is not None:
+            self.figura_nova.desenhar(
+                self.canvas,
+                dash=(4, 2)
+            )
