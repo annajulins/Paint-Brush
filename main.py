@@ -1,6 +1,3 @@
 window = Tk()
-frame = Frame(window)
-
-paddings = {'padx:' 5, 'pady:' 5}
-
+app = Geral(window)
 window.mainloop()
