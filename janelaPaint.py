@@ -31,8 +31,8 @@ class JanelaPaint:
   ).pack()
   
   
-  #OptionMenu(
-   # self.root
-    #self.cor
+  OptionMenu(
+    self.root
+    self.cor
     self.cores
   ).pack()
