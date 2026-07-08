@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
+
 class JanelaPaint:
   def __init__(self):
     self.root = Tk()
