@@ -2,6 +2,7 @@ from modelo.desenho import *
 from modelo.figuras import *
 from janelaPaint import *
 
+
 class ControladorPaint:
 
   def __init__(self, desenho: Desenho, visao: JanelaPaint):
