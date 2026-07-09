@@ -1,3 +1,4 @@
+#importações dos demais arquivos
 from modelo.figuras import *
 from janelaPaint import *
 from modelo.desenho import *
