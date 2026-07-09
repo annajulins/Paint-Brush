@@ -69,4 +69,21 @@ class Retangulo(Figura):
     def incompleta(self):
         return (self.x1, self.y1) == (self.x2, self.y2) #raciocinio parece com o de oval, ja que, na igualdade dos cantos, o retangulo nao tem tamanho
         # return self.x1 == self.x2 or self.y1 == self.y2
+
+class Livre(Figura):
+    def __init__(self, cor):
+        super().__init__(cor, "")
+        self.pontos = [] #é criada uma lista para armazenar os pontos do rabisco
+
+    def adicionar_ponto(self, x, y):
+        self.pontos.append((x, y)) #a cada passada de mouse, as coordenadas registradas sao armazenadas na lista
+
+    def desenhar (self, canvas, dash=()):
+        if len(self.pontos) > 1: #o tkinter interliga todos os pontos da lista
+            canvas.create_line(self.pontos, fill = self.cor, dash=dash)
+
+    def incompleta(self): #se tem apenas um ponto, nao ha linha
+        return len(self.pontos) <= 1
+
+
     
