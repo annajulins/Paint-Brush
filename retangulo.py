@@ -9,4 +9,4 @@ class Retangulo(Figura):
 
     def incompleta(self):
         return (self.x1, self.y1) == (self.x2, self.y2) #raciocinio parece com o de oval, ja que, na igualdade dos cantos, o retangulo nao tem tamanho
-        # return self.x1 == self.x2 or self.y1 == self.y2
+        
