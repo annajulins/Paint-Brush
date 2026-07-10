@@ -10,7 +10,4 @@ class Circulo(Figura):
         
     def incompleta(self):
         return self.r == 0 #em aso de figura incompleta, o raio tem comprimento 0
-        # raio_x = abs(self.x2 - self.x1)
-        # raio_y = abs(self.y2 - self.y1)
-
-        # return raio_x == 0 or raio_y == 0
+        
