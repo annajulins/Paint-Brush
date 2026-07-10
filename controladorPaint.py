@@ -5,13 +5,14 @@ from janelaPaint import *
 
 class ControladorPaint:
 
-  def __init__(self, desenho: Desenho, visao: JanelaPaint):
+  def __init__(self, desenho: Desenho, visao: JanelaPaint): #a janela gráfica e onde as figuras serão armazenadas
     self.desenho = desenho
     self.visao = visao
-    self.figura_nova = None
+    self.figura_nova = None #armazena a figura que está sendo desenhada naquele momento, e, enquanto arrasta o mouse, essa figura é atualizada
 
-    self.canvas = self.visao.canvas
-    
+    self.canvas = self.visao.canvas #atalho para não precisar escrever self.visao.canvas o tempo todo
+
+    #associação de eventos do mouse à execução do que precisa ser feito pelo programa
     self.canvas.bind('<ButtonPress-1>', self.iniciar)
     self.canvas.bind('<B1-Motion>', self.mover)
     self.canvas.bind('<ButtonRelease-1>', self.incluir)
@@ -27,7 +28,7 @@ class ControladorPaint:
     self.desenho.atualizar(dash=())
 
   #---eventos---
-  def iniciar(self, event):
+  def iniciar(self, event): #descobrir a figura escolhida
     tipo = self.visao.tipo.get()
 
     if tipo == 'Linha':
@@ -42,9 +43,9 @@ class ControladorPaint:
       self.figura_nova = Livre(self.visao.cor.get())
       self.figura_nova.adicionar_ponto(event.x, event.y)
 
-  def mover(self, event):
+  def mover(self, event): #executado enquanto o mouse está sendo arrastado
     if self.figura_nova is None:
-      return #nao retorna nada, o cogido vai adiante
+      return #se não existe figura em execução não é retornado nada, o código vai adiante
 
     tipo = self.visao.tipo.get()
     if tipo == 'Livre':
@@ -55,15 +56,15 @@ class ControladorPaint:
       self.figura_nova.x2, self.figura_nova.y2 = event.x, event.y
 
     self.desenho.adicionar_figura(self.figura_nova)
-    self.figura_nova.desenhar(self.canvas, dash=(4,2))
-
-    self.desenho.atualizar(dash=(4, 2))
+    self.figura_nova.desenhar(self.canvas, dash=(4,2)) #desenho provisório (figura tracejada)
+    self.desenho.atualizar(dash=(4, 2)) #atualização da tela, redesenha tudo
       
-
+  #executado quando o usuário solta o mouse
   def incluir(self, event, dash=()):
-    if self.figura_nova is None:
+    if self.figura_nova is None: #verifica se a figura é válida
       return
     if not self.figura_nova.incompleta():
       self.desenho.adicionar_figura(self.figura_nova)
-
+      
+    #a figura deixa de ser tracejada e vira definitiva
     self.desenho.atualizar(dash=dash)
