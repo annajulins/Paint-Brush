@@ -17,12 +17,12 @@ class JanelaPaint:
 
     #Label, o que vai aparecer como "título" do programa (título da interface)
     Label(self.frame,
-         text = 'Linha, Livre, Retangulo, Oval ou Circulo'
+         text = 'Linha, Livre, Retangulo, Oval, Circulo ou Quadrado'
           ).grid(column=1, row=0, padx=5, pady=5) #grid() posiciona o widget numa tabela, e os pads são os espaçamentos
   
     #Menu, as opções a serem desenhadas
     OptionMenu(self.frame, self.tipo,
-            'Linha', 'Livre', 'Oval', 'Retangulo', 'Circulo'
+            'Linha', 'Livre', 'Oval', 'Retangulo', 'Circulo', 'Quadrado'
              ).grid(column= 1, row= 1)
 
     OptionMenu(
