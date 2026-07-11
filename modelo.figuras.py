@@ -70,6 +70,30 @@ class Retangulo(Figura):
         return (self.x1, self.y1) == (self.x2, self.y2) #raciocinio parece com o de oval, ja que, na igualdade dos cantos, o retangulo nao tem tamanho
         # return self.x1 == self.x2 or self.y1 == self.y2
 
+class Quadrado(Retangulo): #classe Quadrado herda os atributos e métodos de Retangulo
+    def __init__(self, x1, y1, x2, y2, cor, bg):
+        super().__init__(cor, bg) #herda da classe retangulo
+        self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2
+
+    def desenhar(self, canvas, dash=()):
+        lado = min(abs(self.x2 - self.x1), abs(self.y2 - self.y1)) #o lado do quadrado é definido pelo menor valor entre a largura e a altura do retangulo
+        #a função abs() retorna o valor absoluto de um número, desconsiderando o seu sinal
+         
+        #verificando para qual lado o usuário arrastou o mouse
+        if self.x2 < self.x1: #se o segundo ponto estiver à esquerda do primeiro (mouse arrastado para a esquerda)
+            x2 = self.x1 - lado #o segundo ponto é ajustado para a esquerda
+        else:
+            x2 = self.x1 + lado #caso contrário, o segundo ponto é ajustado para a direita (mouse arrastado para a direita)
+
+        if self.y2 < self.y1: #se o segundo ponto estiver acima do primeiro (usuário arrastou para cima)
+            y2 = self.y1 - lado #o segundo ponto é ajustado para cima
+        else:
+            y2 = self.y1 + lado #caso contrário, o segundo ponto é ajustado para baixo (usuário arrastou para baixo)
+
+        #desenhando o quadrado no canvas, com as coordenadas ajustadas e as cores definidas
+        canvas.create_rectangle(self.x1, self.y1, x2, y2,
+                                outline=self.cor, fill=self.bg, dash=dash)
+
 class Livre(Figura):
     def __init__(self, cor):
         super().__init__(cor, "")
@@ -84,6 +108,8 @@ class Livre(Figura):
 
     def incompleta(self): #se tem apenas um ponto, nao ha linha
         return len(self.pontos) <= 1
+    
+
 
 
     
