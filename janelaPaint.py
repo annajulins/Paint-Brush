@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk 
 
 class JanelaPaint:
   def __init__(self): #abrir a janela tkinter
@@ -37,6 +37,7 @@ class JanelaPaint:
           *self.cores
         ).pack()
     #o * desempacota a lista de cores
+
     #Area de desenho
     self.canvas = Canvas(self.frame,
                       bg= 'white',
@@ -45,4 +46,27 @@ class JanelaPaint:
   
     self.canvas.grid(column=1, row=10, columnspan= 2)
 
+    #criando os botões pra salvar e abrir os arquivos
+    botao_salvar = Button(
+      self.frame,
+      text = "Salvar projeto",
+      command = self.salvar_arquivo
+    )
+
+    botao_abrir = Button(
+      self.frame,
+      text = "Abrir projeto",
+      command = self.abrir_arquivo
+    )
+
+    #colocando os botões de salvar e abrir na tela
+    botao_salvar.grid(column=1, row=11)
+
+    botao_abrir.grid(column=2, row=11)
+
+  def salvar_arquivo(self):
+    self.arquivos.salvar("teste.pnt")
+
+  def abrir_arquivo(self):
+    self.arquivos.abrir("teste.pnt")
     
