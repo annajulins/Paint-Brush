@@ -70,7 +70,7 @@ class Retangulo(Figura):
         return (self.x1, self.y1) == (self.x2, self.y2) #raciocinio parece com o de oval, ja que, na igualdade dos cantos, o retangulo nao tem tamanho
         # return self.x1 == self.x2 or self.y1 == self.y2
 
-class Quadrado(Retangulo): #classe Quadrado herda os atributos e métodos de Retangulo
+class Quadrado(Figura): #classe Quadrado herda os atributos e métodos de Retangulo
     def __init__(self, x1, y1, x2, y2, cor, bg):
         super().__init__(cor, bg) #herda da classe retangulo
         self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2
@@ -81,18 +81,21 @@ class Quadrado(Retangulo): #classe Quadrado herda os atributos e métodos de Ret
          
         #verificando para qual lado o usuário arrastou o mouse
         if self.x2 < self.x1: #se o segundo ponto estiver à esquerda do primeiro (mouse arrastado para a esquerda)
-            x2 = self.x1 - lado #o segundo ponto é ajustado para a esquerda
+            self.x2 = self.x1 - lado #o segundo ponto é ajustado para a esquerda
         else:
-            x2 = self.x1 + lado #caso contrário, o segundo ponto é ajustado para a direita (mouse arrastado para a direita)
+            self.x2 = self.x1 + lado #caso contrário, o segundo ponto é ajustado para a direita (mouse arrastado para a direita)
 
         if self.y2 < self.y1: #se o segundo ponto estiver acima do primeiro (usuário arrastou para cima)
-            y2 = self.y1 - lado #o segundo ponto é ajustado para cima
+            self.y2 = self.y1 - lado #o segundo ponto é ajustado para cima
         else:
-            y2 = self.y1 + lado #caso contrário, o segundo ponto é ajustado para baixo (usuário arrastou para baixo)
+            self.y2 = self.y1 + lado #caso contrário, o segundo ponto é ajustado para baixo (usuário arrastou para baixo)
 
         #desenhando o quadrado no canvas, com as coordenadas ajustadas e as cores definidas
-        canvas.create_rectangle(self.x1, self.y1, x2, y2,
+        canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2,
                                 outline=self.cor, fill=self.bg, dash=dash)
+
+    def incompleta(self):
+        return (self.x1, self.y1) == (self.x2, self.y2) #mesma coisa que retangulo
 
 class Livre(Figura):
     def __init__(self, cor):
