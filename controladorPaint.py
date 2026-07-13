@@ -1,70 +1,54 @@
 from modelo.desenho import *
 from modelo.figuras import *
 from janelaPaint import *
-
+from ferramentaPaint import *
 
 class ControladorPaint:
-
-  def __init__(self, desenho: Desenho, visao: JanelaPaint): #a janela gráfica e onde as figuras serão armazenadas
-    self.desenho = desenho
+  def __init__(self, visao : JanelaPaint, desenho : Desenho): #a janela gráfica e onde as figuras serão armazenadas
     self.visao = visao
+    self.desenho = desenho
+
+    self.ferramentas = {'Linha': Linha_ferramenta(self.visao, self.desenho),
+                        'Circulo': Circulo_ferramenta(self.visao, self.desenho),
+                        'Oval': Oval_ferramenta(self.visao, self.desenho),
+                        'Retangulo': Retangulo_ferramenta(self.visao, self.desenho),
+                        'Quadrado': Quadrado_ferramenta(self.visao, self.desenho),
+                        'Livre': Livre_ferramenta(self.visao, self.desenho)}
+    
+    self.ferramenta_desenho = self.ferramentas['Linha'] #a ferramenta de desenho é escolhida de acordo com a figura selecionada na interface, mas eis o caso base
     self.figura_nova = None #armazena a figura que está sendo desenhada naquele momento, e, enquanto arrasta o mouse, essa figura é atualizada
 
+    #quando o usuário muda a figura, a ferramenta de desenho também muda
+    self.visao.tipo.trace_add("write", self.mudar_ferramenta)
     self.canvas = self.visao.canvas #atalho para não precisar escrever self.visao.canvas o tempo todo
 
     #associação de eventos do mouse à execução do que precisa ser feito pelo programa
     self.canvas.bind('<ButtonPress-1>', self.iniciar)
     self.canvas.bind('<B1-Motion>', self.mover)
     self.canvas.bind('<ButtonRelease-1>', self.incluir)
-
+    
+    #associação de eventos do tkinter à execução do que precisa ser feito pelo programa
     self.visao.cor.trace_add("write", self.mudar_cor)
     self.visao.bg.trace_add("write", self.mudar_bg)
 
+  #com a mudança do option menu, a ferramenta de desenho também muda
+  def mudar_ferramenta(self, *args):
+    figura = self.visao.tipo.get() #descobre qual figura foi escolhida na interface
+    self.ferramenta_desenho = self.ferramentas[figura] #muda a ferramenta de desenho para a correspondente à figura escolhida
+    
   #---cor---
   def mudar_cor(self, *args):
     self.desenho.atualizar(dash=())
 
   def mudar_bg(self, *args):
     self.desenho.atualizar(dash=())
-
+  
   #---eventos---
-  def iniciar(self, event): #descobrir a figura escolhida
-    tipo = self.visao.tipo.get()
-
-    if tipo == 'Linha':
-      self.figura_nova = Linha(event.x, event.y, event.x, event.y, self.visao.cor.get())
-    elif tipo == 'Circulo':
-      self.figura_nova = Circulo(event.x, event.y, 0, self.visao.cor.get(), self.visao.bg.get())
-    elif tipo == 'Oval':
-      self.figura_nova = Oval(event.x, event.y, event.x, event.y, self.visao.cor.get(), self.visao.bg.get())
-    elif tipo == 'Retangulo':
-      self.figura_nova = Retangulo(event.x, event.y, event.x, event.y, self.visao.cor.get(), self.visao.bg.get())
-    else: #sobrou so livre
-      self.figura_nova = Livre(self.visao.cor.get())
-      self.figura_nova.adicionar_ponto(event.x, event.y)
+  def iniciar(self, event): #descobrir a figura escolhida, o mouse_pressionado
+    self.ferramenta_desenho.iniciar(event)
 
   def mover(self, event): #executado enquanto o mouse está sendo arrastado
-    if self.figura_nova is None:
-      return #se não existe figura em execução não é retornado nada, o código vai adiante
-
-    tipo = self.visao.tipo.get()
-    if tipo == 'Livre':
-      self.figura_nova.adicionar_ponto(event.x, event.y)
-    elif tipo == 'Circulo':
-      self.figura_nova.r = ((event.x - self.figura_nova.x)**2 + (event.y - self.figura_nova.y)**2)**0.5
-    else:
-      self.figura_nova.x2, self.figura_nova.y2 = event.x, event.y
-
-    self.desenho.adicionar_figura(self.figura_nova)
-    self.figura_nova.desenhar(self.canvas, dash=(4,2)) #desenho provisório (figura tracejada)
-    self.desenho.atualizar(dash=(4, 2)) #atualização da tela, redesenha tudo
-      
-  #executado quando o usuário solta o mouse
-  def incluir(self, event, dash=()):
-    if self.figura_nova is None: #verifica se a figura é válida
-      return
-    if not self.figura_nova.incompleta():
-      self.desenho.adicionar_figura(self.figura_nova)
-      
-    #a figura deixa de ser tracejada e vira definitiva
-    self.desenho.atualizar(dash=dash)
+    self.ferramenta_desenho.mover(event)
+  
+  def incluir(self, event, dash=()): #executado quando o usuário solta o mouse
+    self.ferramenta_desenho.incluir(event)
