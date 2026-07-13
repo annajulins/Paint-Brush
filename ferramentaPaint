@@ -1,0 +1,28 @@
+from dataclasses import dataclass
+from abc import ABC, abstractmethod
+from tkinter import *
+from view import JanelaPaint
+from beca import Linha, Circulo, Oval, Retangulo, Quadrado, Livre
+from desenho import Desenho
+
+@dataclass
+class Ferramenta(ABC):
+    visao: JanelaPaint
+    desenho: Desenho
+
+    def __post_init__(self):
+        self.canvas = self.visao.canvas
+
+    @abstractmethod
+    def iniciar(self, event):
+        pass
+
+    @abstractmethod
+    def mover(self, event):
+        pass
+
+    @abstractmethod
+    def incluir(self, event, dash=()):
+        pass
+
+
