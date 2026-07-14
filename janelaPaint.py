@@ -5,8 +5,24 @@ from tkinter import filedialog, messagebox
 class JanelaPaint:
   def __init__(self): #abrir a janela tkinter
     self.root = Tk()
-    self.frame = Frame(self.root) #o frame é tipo o recipiente para organizar widgets
-    self.frame.pack() #o pack coloca o frame dentro da janela
+
+    self.root.title("Paint Brush")
+    self.root.configure(bg="#ECECEC")
+
+    #criando uma barra de ferramentas para deixar o programa visualmente mais bonito
+    self.toolbar = Frame(
+        self.root,
+        bg="#D9D9D9",
+        height=45
+    )
+    self.toolbar.pack(fill=X)
+
+    #o frame é tipo o recipiente para organizar widgets
+    self.frame = Frame(
+          self.root,
+          bg="#ECECEC"
+        ) 
+    self.frame.pack(fill=BOTH, expand=True) #o pack coloca o frame dentro da janela
 
     #vetor das cores a serem escolhidas
     self.cores = ["black", "red", "orange", "yellow", "green", "blue", "purple", "white"]
@@ -16,54 +32,57 @@ class JanelaPaint:
     self.cor = StringVar(value = self.cores[0])
     self.bg = StringVar(value = self.cores[0])
 
-    #Label, o que vai aparecer como "título" do programa (título da interface)
-    Label(self.frame,
-         text = 'Linha, Livre, Retangulo, Oval, Circulo ou Quadrado'
-          ).grid(column=1, row=0, padx=5, pady=5) #grid() posiciona o widget numa tabela, e os pads são os espaçamentos
+    #Criando os botões e adicionando eles na barra de ferramentas 
+    #Label, o que vai aparecer ao lado do botão dos tipos de figura
+    Label(self.toolbar, text = 'Tipo:', bg="#D9D9D9").pack(side=LEFT, padx=(10,2)) 
   
-    #Menu, as opções a serem desenhadas
-    OptionMenu(self.frame, self.tipo,
-            'Linha', 'Livre', 'Oval', 'Retangulo', 'Circulo', 'Quadrado'
-             ).grid(column= 1, row= 1)
+    #botão das figuras
+    OptionMenu(self.toolbar, 
+               self.tipo,
+              'Linha', 'Livre', 'Oval', 'Retangulo', 'Circulo', 'Quadrado'
+             ).pack(side=LEFT)
 
+    #texto bonitinho ao lado da opção das cores
+    Label (self.toolbar, text = 'Cor:', bg="#D9D9D9").pack(side=LEFT, padx=(15,2)) 
+
+    #botão das cores da linha
     OptionMenu(
-            self.root,
+            self.toolbar,
             self.cor,
             *self.cores
-        ).pack()
+        ).pack(side=LEFT)
 
+    #Texto ao lado da opção das cores de preenchimento
+    Label (self.toolbar, text = 'Preenchimento:', bg="#D9D9D9").pack(side=LEFT, padx=(15,2)) 
+
+    #botão das cores de preenchimento
     OptionMenu(
-          self.root,
+          self.toolbar,
           self.bg,
           *self.cores
-        ).pack()
+        ).pack(side=LEFT)
     #o * desempacota a lista de cores
 
     #Area de desenho
     self.canvas = Canvas(self.frame,
-                      bg= 'white',
-                      width= 700,
-                      height= 400)
-  
+                      bg= "#FAFAFA",
+                      width= 1000,
+                      height= 500)
+    
     self.canvas.grid(column=1, row=10, columnspan= 2)
 
     #criando os botões pra salvar e abrir os arquivos
     botao_salvar = Button(
-      self.frame,
+      self.toolbar,
       text = "Salvar projeto",
       command = self.salvar_arquivo
-    )
+    ).pack(side=LEFT, padx=7, pady=5)
 
     botao_abrir = Button(
-      self.frame,
+      self.toolbar,
       text = "Abrir projeto",
       command = self.abrir_arquivo
-    )
-
-    #colocando os botões de salvar e abrir na tela
-    botao_salvar.grid(column=1, row=11)
-
-    botao_abrir.grid(column=2, row=11)
+    ).pack(side=LEFT, padx=7, pady=5)
 
   #metodos de salvar e abrir arquivos, as importações do tkinter no começo do view permite que o usuário escolha um nome para seu arquivo e salve onde quiser
   def salvar_arquivo(self):
