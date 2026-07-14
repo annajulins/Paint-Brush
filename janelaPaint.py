@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk 
+from tkinter import filedialog, messagebox
 
 class JanelaPaint:
   def __init__(self): #abrir a janela tkinter
@@ -42,7 +43,7 @@ class JanelaPaint:
     self.canvas = Canvas(self.frame,
                       bg= 'white',
                       width= 700,
-                      height= 500)
+                      height= 400)
   
     self.canvas.grid(column=1, row=10, columnspan= 2)
 
@@ -64,9 +65,23 @@ class JanelaPaint:
 
     botao_abrir.grid(column=2, row=11)
 
+  #metodos de salvar e abrir arquivos, as importações do tkinter no começo do view permite que o usuário escolha um nome para seu arquivo e salve onde quiser
   def salvar_arquivo(self):
-    self.arquivos.salvar("teste.pnt")
+    nome = filedialog.asksaveasfilename(
+        defaultextension=".pnt",
+        filetypes=[("Arquivos Paint", "*.pnt")]
+    )
+
+    if nome: 
+      self.arquivos.salvar(nome)
+      messagebox.showinfo("Salvar", "Projeto salvo com sucesso!")
 
   def abrir_arquivo(self):
-    self.arquivos.abrir("teste.pnt")
+    nome = filedialog.askopenfilename(
+        filetypes=[("Arquivos Paint", "*.pnt")]
+    )
+
+    if nome:
+      self.arquivos.abrir(nome)
+      messagebox.showinfo("Abrir", "Projeto carregado com sucesso!")
     
