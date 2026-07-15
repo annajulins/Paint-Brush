@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from tkinter import *
-from view import JanelaPaint
-from beca import Linha, Circulo, Oval, Retangulo, Quadrado, Livre
-from desenho import Desenho
+from janelaPaint import JanelaPaint
+from modelo.figuras import *
+from modelo.desenho import Desenho
 
 @dataclass
 class Ferramenta(ABC):
