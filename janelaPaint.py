@@ -8,7 +8,7 @@ class JanelaPaint:
   def __init__(self): #abrir a janela tkinter
     self.root = Tk()
 
-    self.root.title("Paint Brush")
+    self.root.title("Paint Brush") 
     self.root.configure(bg="#ECECEC")
 
     #------------------------------------Criando os Frames---------------------------------------------
@@ -29,10 +29,10 @@ class JanelaPaint:
     self.frame_principal.pack(fill=BOTH, expand=True) #o pack coloca o frame dentro da janela
 
     #criando 2 outros frames dentro do frame principal para fazer uma barra lateral de ferramentas
-    self.frame_canvas = Frame(self.frame_principal)
+    self.frame_canvas = Frame(self.frame_principal) #esse frame é a área de desenho
     self.frame_canvas.pack(side='left', fill = 'both', expand = True)
 
-    self.frame_lateral = Frame(
+    self.frame_lateral = Frame( #esse é uma barra lateral ao lado direito da área de desenho
       self.frame_principal,
       width = 250,
       bg = "#BFEFFF"
@@ -59,19 +59,22 @@ class JanelaPaint:
     self.img_circulo = PhotoImage(data=CIRCULO)
     self.img_oval = PhotoImage(data=OVAL)
     self.img_retangulo = PhotoImage(data=RETANGULO)
+    self.img_triangulo = PhotoImage(data=TRIANGULO)
     self.img_quadrado = PhotoImage(data=QUADRADO)
     self.img_livre = PhotoImage(data=LIVRE)
+    self.img_selecionar = PhotoImage(data=SELECIONAR)
 
+    #explicando um botão e os demais funcionam da mesma forma
     Button(
-      self.frame_lateral,
-      image = self.img_linha,
-      command = lambda : self.tipo.set("Linha"),
-      relief = "flat",
-      bg = "#BFEFFF",
-      activebackground="#99D9EA",
-      bd = 0,
+      self.frame_lateral, #onde o botão está localizado
+      image = self.img_linha, #icone do botão
+      command = lambda : self.tipo.set("Linha"), #função lambda que retorna oq o botão faz
+      relief = "flat", #definindo como será a borda do botão
+      bg = "#BFEFFF", #cor de fundo do botão
+      activebackground="#99D9EA", #cor quando passa o mouse em cima do botão
+      bd = 0, #esse e o de baixo servem pra tirar o contorno preto q tinha em volta dos ícones
       highlightthickness=0
-    ).grid(row=1, column=0, padx=3, pady=3)
+    ).grid(row=1, column=0, padx=3, pady=3) #o grid serve como uma matriz onde o 'row' e o 'column' servem pra colocar os ícones propostos como queremos
 
     Button(
       self.frame_lateral,
@@ -127,6 +130,28 @@ class JanelaPaint:
       bd = 0,
       highlightthickness=0
     ).grid(row=0, column=1, padx=3, pady=3)
+
+    Button(
+      self.frame_lateral,
+      image = self.img_triangulo,
+      command = lambda : self.tipo.set("Triangulo"),
+      relief = "flat",
+      bg = "#BFEFFF",
+      activebackground="#99D9EA",
+      bd = 0,
+      highlightthickness=0
+    ).grid(row=1, column=3, padx=3, pady=3)
+
+    Button(
+      self.frame_lateral,
+      image = self.img_selecionar,
+      command = lambda : self.tipo.set("Selecionar"),
+      relief = "flat",
+      bg = "#BFEFFF",
+      activebackground="#99D9EA",
+      bd = 0,
+      highlightthickness=0
+    ).grid(row=0, column=3, padx=3, pady=3)
 
     #Salvando em variáveis os ícones de cor do arquivo dos ícones
     self.img_preto = PhotoImage(data=PRETO)
@@ -346,7 +371,7 @@ class JanelaPaint:
       activebackground="#99D9EA",
       bd = 0,
       highlightthickness=0
-    ).pack(side=LEFT, padx=2)
+    ).pack(side=LEFT, padx=2) # o pack só permite deixar os botões enfileirados seja horizontalmente ou verticalmente
 
     Button(
       self.toolbar,
@@ -371,17 +396,20 @@ class JanelaPaint:
 
   #----------------------------------------------------------------------------------------------
 
-  #metodos de salvar e abrir arquivos, as importações do tkinter no começo do view permite que o usuário escolha um nome para seu arquivo e salve onde quiser
+  #metodos de salvar e abrir arquivos, as importações do tkinter no começo do view foram usadas aqui
   def salvar_arquivo(self):
+    #esse trecho o usuário escolhe onde e com qual nome salvar o arquivo, o filedialog.asksaveasfilename() abre a janela do 'salvar como'
     nome = filedialog.asksaveasfilename(
-        defaultextension=".pnt",
-        filetypes=[("Arquivos Paint", "*.pnt")]
+        defaultextension=".pnt", #se o usuário esquecer de colocar a extensão, o Python coloca automaticamente.
+        filetypes=[("Arquivos Paint", "*.pnt")] #define quais tipos de arquivo aparecerão na janela
     )
 
     if nome: 
-      self.arquivos.salvar(nome)
-      messagebox.showinfo("Salvar", "Projeto salvo com sucesso!")
+      self.arquivos.salvar(nome) 
+      messagebox.showinfo("Salvar", "Projeto salvo com sucesso!") #mensagem bonitinha quando o arquivo é salvo
 
+
+  #mesma coisa que salvar 
   def abrir_arquivo(self):
     nome = filedialog.askopenfilename(
         filetypes=[("Arquivos Paint", "*.pnt")]
@@ -390,4 +418,3 @@ class JanelaPaint:
     if nome:
       self.arquivos.abrir(nome)
       messagebox.showinfo("Abrir", "Projeto carregado com sucesso!")
-    
