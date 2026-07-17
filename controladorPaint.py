@@ -148,4 +148,17 @@ class ControladorPaint:
         self.desenho.atualizar(figura_selecionada=figura)
 
 
- 
+  def copiar(self, event):
+    figura = self.ferramentas['Selecionar'].figura_selecionada
+
+    if figura:
+        self.figura_copiada = figura.copiar()
+
+
+  def colar(self, event):
+    if self.figura_copiada:
+        nova = self.figura_copiada.copiar()
+
+        nova.mover(10, 10) #para evitar que cópia apareça exatamente em cima da original, e, como todas tem o mover, funciona para qualquer tipo de figura
+        self.desenho.figuras.append(nova)
+        self.desenho.atualizar()
