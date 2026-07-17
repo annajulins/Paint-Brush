@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from tkinter import *
 from janelaPaint import JanelaPaint
-from modelo.figuras import *
-from modelo.desenho import Desenho
+from modeloFiguras import *
+from modeloDesenho import Desenho
 
 @dataclass
 class Ferramenta(ABC):
@@ -21,11 +21,19 @@ class Ferramenta(ABC):
     def mover(self, event):
         pass
 
-    @abstractmethod
+    #o incluir é o msm pra todas as figuras, exceto pra o Selecionar, então não tem método incluir nos tipos de figura
     def incluir(self, event, dash=()):
-        pass
+        if self.figura_atual is None: 
+            return
+        
+        if not self.figura_atual.incompleta():
+            self.desenho.adicionar_figura(self.figura_atual)
+            
+            self.desenho.atualizar(dash=dash)
 
-#linha
+
+#Em cada uma dessas classes vamos fazer os eventos específicos pra cada tipo de figura sem precisar colocar vários if e else no Controlador
+    #Aqui cada figura inicia e se move de acordo com sua individualidade
 @dataclass
 class Linha_ferramenta(Ferramenta):
     figura_atual: Linha = None
@@ -39,17 +47,7 @@ class Linha_ferramenta(Ferramenta):
         self.desenho.atualizar(dash=(5, 2))  # Atualiza o desenho com a linha tracejada
         self.figura_atual.desenhar(self.canvas, dash=(5, 2))  # Desenha a linha tracejada no canvas 
 
-    def incluir(self, event, dash=()):
-        if self.figura_atual is None: #verifica se a figura é válida
-            return
-        
-        if not self.figura_atual.incompleta():
-            self.desenho.adicionar_figura(self.figura_atual)
-            
-            #a figura deixa de ser tracejada e vira definitiva
-            self.desenho.atualizar(dash=dash)
 
-#mão livre
 @dataclass
 class Livre_ferramenta(Ferramenta):
     figura_atual: Livre = None
@@ -63,18 +61,8 @@ class Livre_ferramenta(Ferramenta):
 
         self.desenho.atualizar(dash=(5, 2))  # Atualiza o desenho com a mão livre tracejada
         self.figura_atual.desenhar(self.canvas, dash=(5, 2))  # Desenha a mão livre tracejada no canvas
-    
-    def incluir(self, event, dash=()):
-        if self.figura_atual is None: #verifica se a figura é válida
-            return
-        
-        if not self.figura_atual.incompleta():
-            self.desenho.adicionar_figura(self.figura_atual)
-            
-            #a figura deixa de ser tracejada e vira definitiva
-            self.desenho.atualizar(dash=dash)
 
-#oval      
+  
 @dataclass
 class Oval_ferramenta(Ferramenta):
     figura_atual: Oval = None
@@ -88,17 +76,7 @@ class Oval_ferramenta(Ferramenta):
         self.desenho.atualizar(dash=(5, 2))  # Atualiza o desenho com o oval tracejado
         self.figura_atual.desenhar(self.canvas, dash=(5, 2)) # Desenha o oval tracejado no canvas 
     
-    def incluir(self, event, dash=()):
-        if self.figura_atual is None: #verifica se a figura é válida
-            return
-        
-        if not self.figura_atual.incompleta():
-            self.desenho.adicionar_figura(self.figura_atual)
-            
-            #a figura deixa de ser tracejada e vira definitiva
-            self.desenho.atualizar(dash=dash)
-    
-#retangulo
+
 @dataclass
 class Retangulo_ferramenta(Ferramenta):
     figura_atual: Retangulo = None
@@ -112,18 +90,21 @@ class Retangulo_ferramenta(Ferramenta):
         self.desenho.atualizar(dash=(5, 2))  # Atualiza o desenho com o retangulo tracejado
         self.figura_atual.desenhar(self.canvas, dash=(5, 2))  # Desenha o retangulo tracejado no canvas 
 
-    def incluir(self, event, dash=()):
-        if self.figura_atual is None: #verifica se a figura é válida
-            return
-        
-        if not self.figura_atual.incompleta():
-            self.desenho.adicionar_figura(self.figura_atual)
-            
-            #a figura deixa de ser tracejada e vira definitiva
-            self.desenho.atualizar(dash=dash)
+
+@dataclass
+class Triangulo_ferramenta(Ferramenta):
+    figura_atual: Triangulo = None
+
+    def iniciar(self, event):
+        self.figura_atual = Triangulo(event.x, event.y, event.x, event.y, self.visao.cor.get(), self.visao.bg.get())
+
+    def mover(self, event):
+        self.figura_atual.x2, self.figura_atual.y2 = event.x, event.y
+
+        self.desenho.atualizar(dash=(5, 2))  # Atualiza o desenho com o retangulo tracejado
+        self.figura_atual.desenhar(self.canvas, dash=(5, 2))  # Desenha o retangulo tracejado no canvas 
 
 
-#quadrado
 @dataclass
 class Quadrado_ferramenta(Ferramenta):
     figura_atual: Quadrado = None
@@ -136,19 +117,9 @@ class Quadrado_ferramenta(Ferramenta):
 
         self.desenho.atualizar(dash=(5, 2))  # Atualiza o desenho com o quadrado tracejado
         self.figura_atual.desenhar(self.canvas, dash=(5, 2))  # Desenha ao quadrado tracejado no canvas 
-
-    def incluir(self, event, dash=()):
-        if self.figura_atual is None: #verifica se a figura é válida
-            return
-        
-        if not self.figura_atual.incompleta():
-            self.desenho.adicionar_figura(self.figura_atual)
-            
-            #a figura deixa de ser tracejada e vira definitiva
-            self.desenho.atualizar(dash=dash)
     
 
-#circulo
+
 @dataclass
 class Circulo_ferramenta(Ferramenta):
     figura_atual: Circulo = None
@@ -162,15 +133,35 @@ class Circulo_ferramenta(Ferramenta):
         self.desenho.atualizar(dash=(5, 2))  # Atualiza o desenho com o oval tracejado
         self.figura_atual.desenhar(self.canvas, dash=(5, 2)) # Desenha o oval tracejado no canvas 
 
-    def incluir(self, event, dash=()):
-        if self.figura_atual is None: #verifica se a figura é válida
+
+
+class Selecionar_ferramenta(Ferramenta): #a classe selecao
+    figura_selecionada : Figura = None
+
+    ultimo_x : int = 0 
+    ultimo_y : int = 0
+
+    def iniciar(self, event):
+        item = self.canvas.find_closest(event.x, event.y) #essa função do Tkinter pega a figura mais próxima ao clique do usuário na área de desenho
+        id_figura = item[0] #essa função retorna uma tupla, onde a primeira posição é o ID da figura
+
+        self.figura_selecionada = self.desenho.buscar_figura(id_figura) #agora que já tem o ID vai buscar qual figura tem esse ID 
+
+        self.ultimo_x, self.ultimo_y = event.x, event.y #atualiza o ultimo x e y 
+
+        self.desenho.atualizar(figura_selecionada = self.figura_selecionada) #atualizando a figura com as modificações
+
+    def mover(self, event):
+        if self.figura_selecionada is None:
             return
-        
-        if not self.figura_atual.incompleta():
-            self.desenho.adicionar_figura(self.figura_atual)
-            
-            #a figura deixa de ser tracejada e vira definitiva
-            self.desenho.atualizar(dash=dash)
 
+        dx = event.x - self.ultimo_x #dx representa a quantidade de pixels que foram movidos no eixo x entre o ultimo ponto e o atual
+        dy = event.y - self.ultimo_y #dy representa a quantidade de pixels que foram movidos no eixo y entre o ultimo ponto e o atual
 
+        self.figura_selecionada.mover(dx, dy) #a própria figura sabe se mover
+        self.desenho.atualizar(figura_selecionada = self.figura_selecionada) #atualiza a figura
 
+        self.ultimo_x, self.ultimo_y = event.x, event.y 
+
+    def incluir (self, event):
+        pass
