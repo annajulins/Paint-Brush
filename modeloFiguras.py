@@ -109,6 +109,33 @@ class Retangulo(Figura):
         self.y1 += dy
         self.y2 += dy
 
+class Triangulo(Figura):
+    def __init__(self, x1, y1, x2, y2, cor, bg):
+        super().__init__(cor, bg)
+        self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2 #cantos armazenados por meio de dois pares de coordenadas
+
+    def desenhar(self, canvas, dash=()):
+        self.esq = min(self.x1, self.x2)
+        self.dir = max(self.x1, self.x2)
+
+        self.topo = min(self.y1, self.y2)
+        self.base = max(self.y1, self.y2)
+
+        self.id_canvas = canvas.create_polygon(self.esq, self.base,
+                                               self.dir, self.base,
+                                               (self.esq + self.dir)/2, self.topo,
+                                               outline = self.cor, fill = self.bg, dash=dash       )
+
+    def incompleta(self):
+        return (self.x1, self.y1) == (self.x2, self.y2) #raciocinio parece com o de oval, ja que, na igualdade dos cantos, o retangulo nao tem tamanho
+        
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.x2 += dx
+        self.y1 += dy
+
+        self.y2 += dy
+
 
 class Quadrado(Figura): #classe Quadrado herda os atributos e métodos de Retangulo
     def __init__(self, x1, y1, x2, y2, cor, bg):
