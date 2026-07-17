@@ -100,3 +100,52 @@ class ControladorPaint:
           self.desenho.atualizar()
 
 
+  def mover_frente(self, event):
+      selecao = self.ferramentas['Selecionar']
+      figura = selecao.figura_selecionada
+
+      if figura and figura in self.desenho.figuras:
+        idx = self.desenho.figuras.index(figura)
+
+        if idx < len(self.desenho.figuras) - 1:
+            self.desenho.figuras[idx], self.desenho.figuras[idx + 1] = \
+            self.desenho.figuras[idx + 1], self.desenho.figuras[idx]
+
+            self.desenho.atualizar(figura_selecionada=figura)           
+
+
+  def mover_tras(self, event):
+    selecao = self.ferramentas['Selecionar']
+    figura = selecao.figura_selecionada
+
+    if figura and figura in self.desenho.figuras:
+        idx = self.desenho.figuras.index(figura)
+
+        if idx > 0:
+            self.desenho.figuras[idx], self.desenho.figuras[idx - 1] = \
+            self.desenho.figuras[idx - 1], self.desenho.figuras[idx]
+
+            self.desenho.atualizar(figura_selecionada=figura)
+
+  
+  def mover_topo(self, event): #leva a figura diretamente para a ultima posição da lista
+    selecao = self.ferramentas['Selecionar']
+    figura = selecao.figura_selecionada
+
+    if figura and figura in self.desenho.figuras:
+        self.desenho.figuras.remove(figura)
+        self.desenho.figuras.append(figura)
+        self.desenho.atualizar(figura_selecionada=figura)
+
+
+  def mover_fundo(self, event): #leva a figura diretamente para a primeira posição da lista
+    selecao = self.ferramentas['Selecionar']
+    figura = selecao.figura_selecionada
+
+    if figura and figura in self.desenho.figuras:
+        self.desenho.figuras.remove(figura)
+        self.desenho.figuras.insert(0, figura)
+        self.desenho.atualizar(figura_selecionada=figura)
+
+
+ 
