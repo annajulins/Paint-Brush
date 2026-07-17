@@ -1,5 +1,8 @@
+#modeloFiguras.py
+
 from tkinter import *
 from abc import ABC, abstractmethod
+from copy import deepcopy #faz uma cópia verdadeira
 
 # ==== CLASSE PAI(ABSTRATA) ====
 class Figura(ABC):
@@ -14,6 +17,22 @@ class Figura(ABC):
     @abstractmethod
     def incompleta(self): #verificação se a figura desenhada está ou não finalizada
         return False
+    
+    #agora cada figura sabe se mover, onde é adicionado à os atuais x e y a quantidade de pixels quando foram movidos
+    @abstractmethod
+    def mover(self, dx, dy):
+        pass
+    
+    #Métodos concretos pq valem para todas as classes filhas, são para trocar a cor da linha e de preenchimento de uma figura
+    def mudar_cor(self, cor):
+        self.cor = cor
+
+    def mudar_bg(self, bg):
+        self.bg = bg
+    
+    def copiar(self):
+        return deepcopy(self)
+
 
 class Linha(Figura):
     def __init__(self, x1, y1, x2, y2, cor):
@@ -21,11 +40,18 @@ class Linha(Figura):
         self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2 #as quatro coordenadas, equivalentes ao ponto inicia e ao final, são armazenadas
 
     def desenhar(self, canvas, dash=()): #no caso de arrasto do mouse, a linha é criada a partir do ponto inicial e do ponto final, sendo a sua cor definida por "fill"
-        canvas.create_line(self.x1, self.y1, self.x2, self.y2, 
+        self.id_canvas = canvas.create_line(self.x1, self.y1, self.x2, self.y2, 
                            fill = self.cor, dash=dash) 
 
     def incompleta(self): #se o mouse não sair do lugar, é retornada uma linha de comprimento 0
         return (self.x1, self.y1) == (self.x2, self.y2)
+
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.x2 += dx
+        self.y1 += dy
+        self.y2 += dy
+
 
 class Circulo(Figura):
     def __init__(self, x, y, r, cor, bg): #são armazenados o centro do circulo, bem como seu raio e as cores de preenchimento e 
@@ -33,42 +59,56 @@ class Circulo(Figura):
         self.x, self.y, self.r = x, y, r
 
     def desenhar(self, canvas, dash=()): #como o tkinter não tem um método para circulo, é utilizado o de ovais com a lógica de calculo de distancia de dois pontos para encontrar o raio
-        canvas.create_oval(self.x - self.r, self.y - self.r, 
+        self.id_canvas = canvas.create_oval(self.x - self.r, self.y - self.r, 
                            self.x + self.r, self.y + self.r, 
                            outline = self.cor, fill = self.bg, dash=dash)
         
     def incompleta(self):
         return self.r == 0 #em caso de figura incompleta, o raio tem comprimento 0
-        # raio_x = abs(self.x2 - self.x1)
-        # raio_y = abs(self.y2 - self.y1)
 
-        # return raio_x == 0 or raio_y == 0
+    def mover(self, dx, dy):
+        self.x += dx
+        self.y += dy
     
+
 class Oval(Figura):
     def __init__(self, x1, y1, x2, y2, cor, bg):
         super().__init__(cor, bg)
         self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2 #armazena as coordenadas dos "cantos"
 
     def desenhar(self, canvas, dash=()):
-        canvas.create_oval(self.x1, self.y1, self.x2, self.y2, 
+        self.id_canvas = canvas.create_oval(self.x1, self.y1, self.x2, self.y2, 
                            outline = self.cor, fill = self.bg, dash=dash)
 
     def incompleta(self):
         return (self.x1, self.y1) == (self.x2, self.y2) #se os dois cantos forem iguais, o oval nao tem tamanho
         # return self.x1 == self.x2 or self.y1 == self.y2
     
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.x2 += dx
+        self.y1 += dy
+        self.y2 += dy
+    
+
 class Retangulo(Figura):
     def __init__(self, x1, y1, x2, y2, cor, bg):
         super().__init__(cor, bg)
         self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2 #cantos armazenados por meio de dois pares de coordenadas
 
     def desenhar(self, canvas, dash=()):
-        canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2, 
+        self.id_canvas = canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2, 
                                 outline = self.cor, fill = self.bg, dash=dash)
 
     def incompleta(self):
         return (self.x1, self.y1) == (self.x2, self.y2) #raciocinio parece com o de oval, ja que, na igualdade dos cantos, o retangulo nao tem tamanho
-        # return self.x1 == self.x2 or self.y1 == self.y2
+        
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.x2 += dx
+        self.y1 += dy
+        self.y2 += dy
+
 
 class Quadrado(Figura): #classe Quadrado herda os atributos e métodos de Retangulo
     def __init__(self, x1, y1, x2, y2, cor, bg):
@@ -91,11 +131,18 @@ class Quadrado(Figura): #classe Quadrado herda os atributos e métodos de Retang
             self.y2 = self.y1 + lado #caso contrário, o segundo ponto é ajustado para baixo (usuário arrastou para baixo)
 
         #desenhando o quadrado no canvas, com as coordenadas ajustadas e as cores definidas
-        canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2,
+        self.id_canvas = canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2,
                                 outline=self.cor, fill=self.bg, dash=dash)
 
     def incompleta(self):
         return (self.x1, self.y1) == (self.x2, self.y2) #mesma coisa que retangulo
+    
+    def mover(self, dx, dy):
+        self.x1 += dx
+        self.x2 += dx
+        self.y1 += dy
+        self.y2 += dy
+
 
 class Livre(Figura):
     def __init__(self, cor):
@@ -107,12 +154,10 @@ class Livre(Figura):
 
     def desenhar (self, canvas, dash=()):
         if len(self.pontos) > 1: #o tkinter interliga todos os pontos da lista
-            canvas.create_line(self.pontos, fill = self.cor, dash=dash)
+            self.id_canvas = canvas.create_line(self.pontos, fill = self.cor, dash=dash)
 
     def incompleta(self): #se tem apenas um ponto, nao ha linha
         return len(self.pontos) <= 1
     
-
-
-
-    
+    def mover(self, dx, dy):
+        self.pontos = [(x + dx, y + dy) for x, y in self.pontos]
