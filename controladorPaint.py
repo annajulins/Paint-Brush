@@ -13,6 +13,7 @@ class ControladorPaint:
                         'Circulo': Circulo_ferramenta(self.visao, self.desenho),
                         'Oval': Oval_ferramenta(self.visao, self.desenho),
                         'Retangulo': Retangulo_ferramenta(self.visao, self.desenho),
+                        'Triangulo': Triangulo_ferramenta(self.visao, self.desenho),
                         'Quadrado': Quadrado_ferramenta(self.visao, self.desenho),
                         'Livre': Livre_ferramenta(self.visao, self.desenho),
                         'Selecionar' : Selecionar_ferramenta(self.visao, self.desenho)}
